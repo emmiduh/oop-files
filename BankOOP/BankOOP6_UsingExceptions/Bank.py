@@ -17,7 +17,7 @@ class bank():
         except ValueError:
             raise AbortTransaction('The account number must be an integer') 
         if accountNumber not in self.accountsDict:
-            raise AbortTransaction('Ther is no account' + str(accountNumber))
+            raise AbortTransaction('There is no account' + str(accountNumber))
         return accountNumber
     
     def getUsersAccount(self):
@@ -25,6 +25,11 @@ class bank():
         oAccount = self.accountsDict[accountNumber]
         self.askForValidPassword(oAccount)
         return oAccount
+    
+    def askForValidPassword(self):
+        userPassword = input('Enter your password')
+        if userPassword != self.password:
+            raise AbortTransaction('Incorrect password for this account')
     
     def deposit(self):
         print('*** Deposit ***')
