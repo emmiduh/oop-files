@@ -27,7 +27,7 @@ class Bank():
         return oAccount
     
     def askForValidPassword(self):
-        userPassword = input('Enter your password')
+        userPassword = input('Enter your password: ')
         if userPassword != self.password:
             raise AbortTransaction('Incorrect password for this account')
         return userPassword
