@@ -3,7 +3,7 @@
 
 # Define a custom exception
 class AbortTransaction(Exception):
-    '''raise this exceoption to abort a bank transaction'''
+    '''raise this exception to abort a bank transaction'''
     pass
 
 class Account():
