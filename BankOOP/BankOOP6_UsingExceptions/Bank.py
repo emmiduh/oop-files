@@ -17,7 +17,7 @@ class Bank():
         except ValueError:
             raise AbortTransaction('The account number must be an integer') 
         if accountNumber not in self.accountsDict:
-            raise AbortTransaction('There is no account' + str(accountNumber))
+            raise AbortTransaction('There is no account ' + str(accountNumber))
         return accountNumber
     
     def getUsersAccount(self):
@@ -25,6 +25,18 @@ class Bank():
         oAccount = self.accountsDict[accountNumber]
         self.askForValidPassword(oAccount)
         return oAccount
+    
+    def balance(self):
+        print('*** Get Balance ***')
+        userAccountNumber = self.askForValidAccountNumber()
+        oAccount = self.accountsDict[userAccountNumber]
+        userAccountPassword = input("Enter your password: ")
+        if userAccountPassword != oAccount.password:
+            print("Incorrect password.")
+            return
+        theBalance = oAccount.getBalance()
+        if theBalance is not None:
+            print('Your balance is:', theBalance)
     
     def askForValidPassword(self):
         userPassword = input('Enter your password: ')
@@ -40,14 +52,6 @@ class Bank():
         print('Withdrew:', userAmount)
         print('Your new balance is:', theBalance)
     
-    def balance(self):
-        print('*** Get Balance ***')
-        userAccountNumber = self.askForValidAccountNumber()
-        userAccountPassword = self.askForValidPassword()
-        oAccount = self.accountsDict[userAccountNumber]
-        theBalance = oAccount.getBalance(userAccountPassword)
-        if theBalance is not None:
-            print('Your balance is:', theBalance)
 
     def createAccount(self, theName, theStartingAmount, thePassword):
         oAccount = Account(theName, theStartingAmount, thePassword)
@@ -62,7 +66,7 @@ class Bank():
         userName = input('What is the name for the new account? ')
         userStartingAmount = input('What is the starting balance for the account? ')
         userStartingAmount = int(userStartingAmount)
-        userPassword = self.askForValidPassword()
+        userPassword = input("Enter your password: ")
         userAccountNumber = self.createAccount(userName, userStartingAmount, userPassword)
         print('Your new account number is:', userAccountNumber)
         print()
