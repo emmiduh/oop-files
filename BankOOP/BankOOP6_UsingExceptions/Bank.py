@@ -2,7 +2,7 @@
 
 from Account import *
 
-class bank():
+class Bank():
     def __init__(self, hours, address, phone):
         self.accountsDict = {}
         self.nextAccountNumber = 0
