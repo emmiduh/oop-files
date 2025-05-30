@@ -30,6 +30,7 @@ class Bank():
         userPassword = input('Enter your password')
         if userPassword != self.password:
             raise AbortTransaction('Incorrect password for this account')
+        return userPassword
     
     def deposit(self):
         print('*** Deposit ***')
@@ -38,6 +39,44 @@ class Bank():
         theBalance = oAccount.withdraw(userAmount)
         print('Withdrew:', userAmount)
         print('Your new balance is:', theBalance)
+    
+    def balance(self):
+        print('*** Get Balance ***')
+        userAccountNumber = self.askForValidAccountNumber()
+        userAccountPassword = self.askForValidPassword()
+        oAccount = self.accountsDict[userAccountNumber]
+        theBalance = oAccount.getBalance(userAccountPassword)
+        if theBalance is not None:
+            print('Your balance is:', theBalance)
+
+    def createAccount(self, theName, theStartingAmount, thePassword):
+        oAccount = Account(theName, theStartingAmount, thePassword)
+        newAccountNumber = self.nextAccountNumber
+        self.accountsDict[newAccountNumber] = oAccount
+        # Increment to prepare for next account to be created
+        self.nextAccountNumber = self.nextAccountNumber + 1
+        return newAccountNumber
+    
+    def openAccount(self):
+        print('*** Open Account ***')
+        userName = input('What is the name for the new account? ')
+        userStartingAmount = input('What is the starting balance for the account? ')
+        userStartingAmount = int(userStartingAmount)
+        userPassword = self.askForValidPassword()
+        userAccountNumber = self.createAccount(userName, userStartingAmount, userPassword)
+        print('Your new account number is:', userAccountNumber)
+        print()
+
+    def closeAccount(self):
+        print('*** Close Account ***')
+        userAccountnumber = self.askForValidAccountNumber()
+        userPassword = self.askForValidPassword()
+        oAccount = self.accountsDict[userAccountnumber]
+        theBalance = oAccount.getBalance(userPassword)
+        if theBalance is not None:
+            print('You had', theBalance, 'in your account, which is being returned to you')
+            del self.accountsDict[userAccountnumber]
+            print('Your account is now closed')
 
     def getInfo(self):
         print('Hours:', self.hours)
