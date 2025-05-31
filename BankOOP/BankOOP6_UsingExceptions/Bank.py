@@ -28,8 +28,7 @@ class Bank():
     
     def balance(self):
         print('*** Get Balance ***')
-        userAccountNumber = self.askForValidAccountNumber()
-        oAccount = self.accountsDict[userAccountNumber]
+        oAccount = self.getUsersAccount()
         userAccountPassword = input("Enter your password: ")
         if userAccountPassword != oAccount.password:
             print("Incorrect password.")
@@ -46,6 +45,14 @@ class Bank():
     
     def deposit(self):
         print('*** Deposit ***')
+        oAccount = self.getUsersAccount()
+        depositAmount = input('Please enter amount to deposit: ')
+        theBalance = oAccount.deposit(depositAmount)
+        print('Deposited:', depositAmount)
+        print('Your new balance is:', theBalance)
+
+    def withdraw(self):
+        print('*** Withdraw ***')
         oAccount = self.getUsersAccount()
         userAmount = input('Please enter the amount to withdraw: ')
         theBalance = oAccount.withdraw(userAmount)
