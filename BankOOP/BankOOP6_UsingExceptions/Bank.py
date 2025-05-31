@@ -90,7 +90,7 @@ class Bank():
             print('Your account is now closed')
 
     def getInfo(self):
-        print('workingHours:', self.workingHours)
+        print('Working Hours:', self.workingHours)
         print('Address:', self.address)
         print('Phone:', self.phone)
         print(f'We currently have {len(self.accountsDict)} account(s) open.')
