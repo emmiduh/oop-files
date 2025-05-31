@@ -3,10 +3,10 @@
 from Account import *
 
 class Bank():
-    def __init__(self, hours, address, phone):
+    def __init__(self, workingHours, address, phone):
         self.accountsDict = {}
         self.nextAccountNumber = 0
-        self.hours = hours
+        self.workingHours = workingHours
         self.address = address
         self.phone = phone
 
@@ -90,7 +90,7 @@ class Bank():
             print('Your account is now closed')
 
     def getInfo(self):
-        print('Hours:', self.hours)
+        print('workingHours:', self.workingHours)
         print('Address:', self.address)
         print('Phone:', self.phone)
         print(f'We currently have {len(self.accountsDict)} account(s) open.')
