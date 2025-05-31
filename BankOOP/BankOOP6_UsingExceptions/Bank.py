@@ -25,21 +25,10 @@ class Bank():
         oAccount = self.accountsDict[accountNumber]
         self.askForValidPassword(oAccount)
         return oAccount
-    
-    def balance(self):
-        print('*** Get Balance ***')
-        oAccount = self.getUsersAccount()
-        userAccountPassword = input("Enter your password: ")
-        if userAccountPassword != oAccount.password:
-            print("Incorrect password.")
-            return
-        theBalance = oAccount.getBalance()
-        if theBalance is not None:
-            print('Your balance is:', theBalance)
-    
-    def askForValidPassword(self):
+     
+    def askForValidPassword(self, account):
         userPassword = input('Enter your password: ')
-        if userPassword != self.password:
+        if userPassword != account.password:
             raise AbortTransaction('Incorrect password for this account')
         return userPassword
     
@@ -59,6 +48,17 @@ class Bank():
         print('Withdrew:', userAmount)
         print('Your new balance is:', theBalance)
     
+    def balance(self):
+        print('*** Get Balance ***')
+        userAccountNumber = self.askForValidAccountNumber()
+        oAccount = self.accountsDict[userAccountNumber]
+        userAccountPassword = input("Enter your password: ")
+        if userAccountPassword != oAccount.password:
+            print("Incorrect password.")
+            return
+        theBalance = oAccount.getBalance()
+        if theBalance is not None:
+            print('Your balance is:', theBalance)    
 
     def createAccount(self, theName, theStartingAmount, thePassword):
         oAccount = Account(theName, theStartingAmount, thePassword)
@@ -81,9 +81,9 @@ class Bank():
     def closeAccount(self):
         print('*** Close Account ***')
         userAccountnumber = self.askForValidAccountNumber()
-        userPassword = self.askForValidPassword()
         oAccount = self.accountsDict[userAccountnumber]
-        theBalance = oAccount.getBalance(userPassword)
+        userPassword = self.askForValidPassword(oAccount)
+        theBalance = oAccount.getBalance()
         if theBalance is not None:
             print('You had', theBalance, 'in your account, which is being returned to you')
             del self.accountsDict[userAccountnumber]
@@ -98,6 +98,8 @@ class Bank():
     def show(self):
         print('*** Show ***')
         print('(This would typically require and admin password)')
+        if len(self.accountsDict) == 0:
+            raise AbortTransaction('There are currently zero accounts to show. Press o to open a new account')
         for userAccountNumber in self.accountsDict:
             oAccount = self.accountsDict[userAccountNumber]
             print(f'Account: {userAccountNumber}')
