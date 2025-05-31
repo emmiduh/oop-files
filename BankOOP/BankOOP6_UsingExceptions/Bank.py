@@ -101,15 +101,14 @@ class Bank():
 
     def show(self):
         print('*** Show ***')
-        adminPassword = input('Enter the admin password: ')
-        if adminPassword == self.adminPassword:
-            if len(self.accountsDict) == 0:
-                print()
-                raise AbortTransaction('The bank currently has zero accounts!. Press o to open a new account')
-            for userAccountNumber in self.accountsDict:
-                oAccount = self.accountsDict[userAccountNumber]
-                print(f'Account: {userAccountNumber}')
-                oAccount.show()
-                print()
-        else:
-            raise AbortTransaction('Incorrect Admin password provided!')
+        adminPassword = input('Enter the admin password: ').strip()
+        if adminPassword != self.adminPassword:
+            raise AbortTransaction('Incorrect admin password provided!')
+        if len(self.accountsDict) == 0:
+            print()
+            raise AbortTransaction('The bank currently has zero accounts! Press o to open a new account.')
+        print('\n--- Account Summary ---')
+        for userAccountNumber, oAccount in self.accountsDict.items():
+            print(f'Account: {userAccountNumber}')
+            oAccount.show()
+            print()
