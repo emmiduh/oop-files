@@ -9,7 +9,35 @@ class Bank():
         self.workingHours = workingHours
         self.address = address
         self.phone = phone
+        self.adminPassword = 'AdminsPass'
 
+    def createAccount(self, theName, theStartingAmount, thePassword):
+        oAccount = Account(theName, theStartingAmount, thePassword)
+        newAccountNumber = self.nextAccountNumber
+        self.accountsDict[newAccountNumber] = oAccount
+        # Increment to prepare for next account to be created
+        self.nextAccountNumber = self.nextAccountNumber + 1
+        return newAccountNumber
+    
+    def openAccount(self):
+        print('*** Open Account ***')
+        userName = input('What is the name for the new account? ')
+        userStartingAmount = input('What is the starting balance for the account? ')
+        try:
+            userStartingAmount = int(userStartingAmount)
+        except ValueError:
+            raise AbortTransaction('The starting balance must be an integer')
+        userPassword = input("Enter your password: ")
+        userAccountNumber = self.createAccount(userName, userStartingAmount, userPassword)
+        print('Account Opened! Your new account number is:', userAccountNumber)
+        print()
+
+    def askForValidPassword(self, account):
+        userPassword = input('Enter your password: ')
+        if userPassword != account.password:
+            raise AbortTransaction('Incorrect password for this account')
+        return userPassword
+    
     def askForValidAccountNumber(self):
         accountNumber = input('What is your account number? ')
         try:
@@ -17,7 +45,7 @@ class Bank():
         except ValueError:
             raise AbortTransaction('The account number must be an integer') 
         if accountNumber not in self.accountsDict:
-            raise AbortTransaction('There is no account ' + str(accountNumber))
+            raise AbortTransaction(f'Account {accountNumber} is not registered in this bank!')
         return accountNumber
     
     def getUsersAccount(self):
@@ -26,12 +54,6 @@ class Bank():
         self.askForValidPassword(oAccount)
         return oAccount
      
-    def askForValidPassword(self, account):
-        userPassword = input('Enter your password: ')
-        if userPassword != account.password:
-            raise AbortTransaction('Incorrect password for this account')
-        return userPassword
-    
     def deposit(self):
         print('*** Deposit ***')
         oAccount = self.getUsersAccount()
@@ -60,29 +82,11 @@ class Bank():
         if theBalance is not None:
             print('Your balance is:', theBalance)    
 
-    def createAccount(self, theName, theStartingAmount, thePassword):
-        oAccount = Account(theName, theStartingAmount, thePassword)
-        newAccountNumber = self.nextAccountNumber
-        self.accountsDict[newAccountNumber] = oAccount
-        # Increment to prepare for next account to be created
-        self.nextAccountNumber = self.nextAccountNumber + 1
-        return newAccountNumber
-    
-    def openAccount(self):
-        print('*** Open Account ***')
-        userName = input('What is the name for the new account? ')
-        userStartingAmount = input('What is the starting balance for the account? ')
-        userStartingAmount = int(userStartingAmount)
-        userPassword = input("Enter your password: ")
-        userAccountNumber = self.createAccount(userName, userStartingAmount, userPassword)
-        print('Your new account number is:', userAccountNumber)
-        print()
-
     def closeAccount(self):
         print('*** Close Account ***')
         userAccountnumber = self.askForValidAccountNumber()
         oAccount = self.accountsDict[userAccountnumber]
-        userPassword = self.askForValidPassword(oAccount)
+        self.askForValidPassword(oAccount)
         theBalance = oAccount.getBalance()
         if theBalance is not None:
             print('You had', theBalance, 'in your account, which is being returned to you')
@@ -97,11 +101,15 @@ class Bank():
 
     def show(self):
         print('*** Show ***')
-        print('(This would typically require and admin password)')
-        if len(self.accountsDict) == 0:
-            raise AbortTransaction('There are currently zero accounts to show. Press o to open a new account')
-        for userAccountNumber in self.accountsDict:
-            oAccount = self.accountsDict[userAccountNumber]
-            print(f'Account: {userAccountNumber}')
-            oAccount.show()
-            print()
+        adminPassword = input('Enter the admin password: ')
+        if adminPassword == self.adminPassword:
+            if len(self.accountsDict) == 0:
+                print()
+                raise AbortTransaction('The bank currently has zero accounts!. Press o to open a new account')
+            for userAccountNumber in self.accountsDict:
+                oAccount = self.accountsDict[userAccountNumber]
+                print(f'Account: {userAccountNumber}')
+                oAccount.show()
+                print()
+        else:
+            raise AbortTransaction('Incorrect Admin password provided!')
